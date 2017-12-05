@@ -1,0 +1,12 @@
+rootProject.name = 'texts_ws'
+
+include 'common/getquill'
+include 'common/ws/awslambdahttp4s'
+include 'common/ws/http4s'
+include 'common/scala'
+//include 'pap_common_test_module'
+//include 'common_ws_metrics_module'
+//include 'common_ws_module'
+//include 'common_scala_module'
+//include 'mws_api'
+

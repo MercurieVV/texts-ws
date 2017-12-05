@@ -1,0 +1,13 @@
+apply plugin: 'groovy'
+repositories {
+    jcenter()
+}
+
+dependencies {
+//    runtime project('D:\\programming\\imei_delivery_date_ws\\buildSrc\\scala-db-codegen\\build.gradle')
+    runtime subprojects.collect { owner.project(it.path) }
+    compile gradleApi()
+    compile localGroovy()
+    compile group: 'io.swagger', name: 'swagger-codegen-maven-plugin', version: '2.2.2'
+    compile 'com.querydsl:querydsl-sql-codegen:4.1.3'
+}

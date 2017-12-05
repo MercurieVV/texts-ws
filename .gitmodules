@@ -1,0 +1,24 @@
+[submodule "pap_common_gradle_scripts"]
+	path = pap_common_gradle_scripts
+	url = git@git.next-wireless.co:/git/pap_common_gradle_scripts
+[submodule "common/ws/awslambdahttp4s"]
+	path = common/ws/awslambdahttp4s
+	url = git@git.next-wireless.co:/git/common/ws/awslambdahttp4s
+[submodule "common/getquill"]
+	path = common/getquill
+	url = git@git.next-wireless.co:/git/common/getquill
+[submodule "common/ws/http4s"]
+	path = common/ws/http4s
+	url = git@git.next-wireless.co:/git/common/ws/http4s
+[submodule "common/scala"]
+	path = common/scala
+	url = git@git.next-wireless.co:/git/common/scala
+[submodule "swagger/templates/http4s_server"]
+	path = swagger/templates/http4s_server
+	url = git@git.next-wireless.co:/git/swagger/templates/http4s_server
+[submodule "liquibase"]
+	path = liquibase
+	url = git@git.next-wireless.co:/git/liquibase
+[submodule "security"]
+	path = security
+	url = gitsecurity@git.next-wireless.co:~/texts_ws

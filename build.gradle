@@ -1,0 +1,150 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.172'
+        classpath 'org.scala-lang:scala-library:' + scalaVersionMinor
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.11'
+    }
+}
+plugins {
+    id 'org.detoeuf.swagger-codegen' version '1.7.4'
+    id "net.ltgt.apt" version "0.10"
+}
+
+group "co.nextwireless.texts.ws"
+version '1.0-SNAPSHOT'
+
+apply plugin: 'scala'
+apply plugin: "info.solidsoft.pitest"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+apply from: 'pap_common_gradle_scripts/common.gradle'
+apply from: 'pap_common_gradle_scripts/project_init.gradle'
+apply from: 'pap_common_gradle_scripts/profiles.gradle'
+apply from: 'pap_common_gradle_scripts/properties.gradle'
+
+apply from: 'pap_common_gradle_scripts/databases.gradle'
+
+//apply from: 'pap_common_gradle_scripts/ssh.gradle'
+
+apply from: 'pap_common_gradle_scripts/swagger.gradle'
+
+apply from: 'pap_common_gradle_scripts/aws_lambda.gradle'
+
+apply from: 'pap_common_gradle_scripts/ssh_scriptss.gradle'
+
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url 'http://dl.bintray.com/content/lightshed/maven' }
+}
+jar {
+    baseName project.name
+}
+aws {
+    profileName "default"
+    region "eu-west-1"
+//    accountId "283792689871"
+}
+
+
+
+dependencies {
+    compile 'org.scala-lang:scala-library:' + scalaVersionMinor
+    compile project(":common/scala")
+
+    compile "ch.lightshed:courier_${scalaVersionMajor}:0.1.4"
+
+    //HTTP server
+    compile project(":common/ws/http4s")
+    compile project(":common/ws/awslambdahttp4s")
+    compile "ch.qos.logback:logback-classic:1.2.1"
+
+    compile group: 'io.circe', name: "circe-yaml_${scalaVersionMajor}", version: '0.6.1'
+
+    //DB
+    compile project(":common/getquill")
+//    compile group: 'io.getquill', name: "quill-core_${scalaVersionMajor}", version: '2.2.0'
+//    compile group: 'io.getquill', name: "quill-jdbc_${scalaVersionMajor}", version: '2.2.0'
+//    compile group: 'io.getquill', name: "quill-sql_${scalaVersionMajor}", version: '2.2.0'
+//    compile group: 'io.getquill', name: "quill-async-mysql_${scalaVersionMajor}", version: '2.2.0'
+//    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.41'
+
+    compile group: 'com.beachape', name: "enumeratum_${scalaVersionMajor}", version: '1.5.12'
+
+//DI
+    compileOnly "com.softwaremill.macwire:macros_${scalaVersionMajor}:2.3.0"
+    compileOnly "com.softwaremill.macwire:macrosakka_${scalaVersionMajor}:2.3.0"
+    compile "com.softwaremill.macwire:util_${scalaVersionMajor}:2.3.0"
+    compile "com.softwaremill.macwire:proxy_${scalaVersionMajor}:2.3.0"
+
+//    compile group: 'org.typelevel', name: "cats-core_${scalaVersionMajor}", version: '1.0.0-MF'
+
+    //ENUMS
+    compile group: 'com.beachape', name: "enumeratum_${scalaVersionMajor}", version: '1.5.12'
+
+//    SWAGGER
+//    compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.13'
+
+//    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
+
+//    AWS LAMBDA
+//    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.1.0'
+    runtime 'com.amazonaws:aws-lambda-java-log4j:1.0.0'
+    runtime 'org.slf4j:slf4j-log4j12:1.7.21'
+
+//    testCompile group: 'com.github.alexarchambault', name: 'scalacheck-shapeless_1.13_${scalaVersionMajor}', version: '1.1.6'
+//    testCompile project(":common_scala_test_module")
+//    testCompile project(":pap_common_test_module")
+
+    compile "org.scalactic:scalactic_${scalaVersionMajor}:3.0.4"
+    testCompile group: 'org.scalacheck', name: "scalacheck_${scalaVersionMajor}", version: '1.13.5'
+    testCompile "org.scalatest:scalatest_${scalaVersionMajor}:3.0.4"
+}
+
+sourceSets {
+    main {
+        scala {
+            srcDir "${project.buildDir}/swagger/http4sserver/${project.name}/src/main/scala"
+            srcDir "src/main/scala"
+//            srcDir "src/main/java"
+//            srcDir "${project.buildDir}/generated-src/quill"
+        }
+        java {
+            srcDirs = []
+        }
+        resources {
+            srcDir "security"
+        }
+    }
+}
+
+pitest {
+    targetClasses = ['co.next-wireless.*Controller']  //by default "${project.group}.*"
+    pitestVersion = "1.1.5" //not needed when a default PIT version should be used
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+}
+
+/*
+task generateDbClasses(){
+    doLast{
+        JavaRunner$.MODULE$.gen("${project.buildDir}/generated-src/quill/tables/Tables.scala")
+    }
+}
+*/
+
+precompileFast.dependsOn generateHttp4sServer
+//classes.dependsOn precompileFast
+//zipApi.dependsOn generateSwift3Client
+//precompileAll.dependsOn generateDbClasses
+
+contInt.dependsOn clean, build//AWS, migrateFunction
