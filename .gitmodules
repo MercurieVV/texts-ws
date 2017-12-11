@@ -22,3 +22,6 @@
 [submodule "security"]
 	path = security
 	url = gitsecurity@git.next-wireless.co:~/texts_ws
+[submodule "swagger/apis/texts_ws"]
+	path = swagger/apis/texts_ws
+	url = git@git.next-wireless.co:/git/swagger/apis/texts_ws
