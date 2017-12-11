@@ -34,6 +34,8 @@ apply from: 'pap_common_gradle_scripts/databases.gradle'
 
 apply from: 'pap_common_gradle_scripts/swagger.gradle'
 
+apply from: 'pap_common_gradle_scripts/getquill.gradle'
+
 apply from: 'pap_common_gradle_scripts/aws_lambda.gradle'
 
 apply from: 'pap_common_gradle_scripts/ssh_scriptss.gradle'
@@ -115,7 +117,7 @@ sourceSets {
             srcDir "${project.buildDir}/swagger/http4sserver/${project.name}/src/main/scala"
             srcDir "src/main/scala"
 //            srcDir "src/main/java"
-//            srcDir "${project.buildDir}/generated-src/quill"
+            srcDir "${project.buildDir}/generated-src/quill"
         }
         java {
             srcDirs = []
@@ -134,6 +136,11 @@ pitest {
     timestampedReports = false
 }
 
+
+updateMain.dependsOn updateMainProjectSchema
+updateTest.dependsOn updateTestProjectSchema
+
+
 /*
 task generateDbClasses(){
     doLast{
@@ -145,6 +152,6 @@ task generateDbClasses(){
 precompileFast.dependsOn generateHttp4sServer
 //classes.dependsOn precompileFast
 //zipApi.dependsOn generateSwift3Client
-//precompileAll.dependsOn generateDbClasses
+precompileAll.dependsOn generateDbClasses
 
 contInt.dependsOn clean, build//AWS, migrateFunction
