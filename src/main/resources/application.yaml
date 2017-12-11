@@ -1,4 +1,3 @@
 app:
-  url: "http://ws.newws.phoneandphone.com:8003/api"
   db:
-    defaultSchema: "newws"
+    defaultSchema: "gestion"

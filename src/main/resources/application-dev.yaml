@@ -1,11 +1,11 @@
 app:
-  url: "http://ws.newws.phoneandphone.com:8003/api"
   db:
-    login: "newws"
+    login: "texts"
     password: "pass"
     rdbms: "mysql"
     host: "dev.ccx3fc954dex.eu-west-1.rds.amazonaws.com"
     driverClass: "com.mysql.jdbc.Driver"
+    db_maker_password: "eSvPx0NOnGc9EnLVH0pv"
   server:
     port: 8086
   email_properties:

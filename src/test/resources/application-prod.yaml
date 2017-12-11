@@ -1,5 +1,4 @@
 app:
-  url: "http://ws.newws.phoneandphone.com:8003/api"
   db:
     rdbms: "mysql"
     host: "nextwirelessbo.ccx3fc954dex.eu-west-1.rds.amazonaws.com"
