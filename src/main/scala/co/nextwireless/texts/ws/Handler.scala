@@ -7,7 +7,7 @@ import co.nextwireless.common.getquill.DbConfig
 import co.nextwireless.common.ws.awslambda.http4s.Http4sAwsProxyHandler
 import co.nextwireless.common.ws.awslambda.http4s.Http4sAwsProxyHandler.{Input, Output}
 import co.nextwireless.common.{LogHelper, PropertiesLoader}
-import co.nextwireless.texts.ws.server.swagger.zapi.TextApi
+import co.nextwireless.texts.ws.server.swagger.zapi.TextsApi
 import com.amazonaws.services.lambda.runtime.{Context, RequestHandler}
 import fs2.{Stream, Task}
 import org.http4s.{HttpService, QueryParamDecoder}
@@ -36,7 +36,7 @@ class Handler extends RequestHandler[Input, Output] {
         new DIContext(properties, dbConfig)
       })
       .map((context: DIContext) => context.api)
-      .map((api: TextApi) => api.httpService)
+      .map((api: TextsApi) => api.httpService)
 
 
     handler.performRequest(input, httpService)

@@ -1,8 +1,7 @@
 package co.nextwireless.texts.ws
 
 import co.nextwireless.common.getquill.DbConfig
-import co.nextwireless.texts.ws.server.swagger.zapi.TextApi
-import co.nextwireless.texts.ws.server.swagger.zapi.impl.TextApiProcessorsModule
+import co.nextwireless.texts.ws.server.swagger.zapi.impl.TextsApiProcessorsModule
 
 /**
   * Created with IntelliJ IDEA.
@@ -11,7 +10,7 @@ import co.nextwireless.texts.ws.server.swagger.zapi.impl.TextApiProcessorsModule
   * Time: 7:17 PM
   * Contacts: email: mercurievvss@gmail.com Skype: 'grobokopytoff' or 'mercurievv'
   */
-class DIContext(ap: AppProperties, dbc: DbConfig) extends TextApiProcessorsModule {
+class DIContext(ap: AppProperties, dbc: DbConfig) extends TextsApiProcessorsModule {
   import com.softwaremill.macwire._
 
   override def getDbConfig(): DbConfig = dbc
