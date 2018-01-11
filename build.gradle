@@ -5,6 +5,7 @@ buildscript {
 
     dependencies {
         classpath group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.172'
+//        classpath group: 'com.amazonaws', name: 'aws-java-sdk-api-gateway', version: '1.11.224'
         classpath 'org.scala-lang:scala-library:' + scalaVersionMinor
         classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.11'
     }
@@ -137,8 +138,8 @@ pitest {
 }
 
 
-updateMain.dependsOn updateMainProjectSchema
-updateTest.dependsOn updateTestProjectSchema
+updateMain.dependsOn updateMainProjectDb
+updateTest.dependsOn updateTestProjectDb
 
 
 /*
@@ -154,4 +155,4 @@ precompileFast.dependsOn generateHttp4sServer
 //zipApi.dependsOn generateSwift3Client
 precompileAll.dependsOn generateDbClasses
 
-contInt.dependsOn clean, build//AWS, migrateFunction
+contInt.dependsOn clean, build, migrateFunction
