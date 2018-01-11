@@ -59,8 +59,8 @@ public class NWScalaCodegen extends SpringCodegen {
         instantiationTypes.put("map", "Map");
 
 //        typeMapping.put("FeatureTestResult", "FeatureTestResult.FeatureTestResult");
-        importMapping.put("ApiModelProperty", "io.swagger.annotations.ApiModelProperty");
-        importMapping.put("ApiModel", "io.swagger.annotations.ApiModel");
+        importMapping.remove("ApiModelProperty");
+        importMapping.remove("ApiModel");
 
         importMapping.remove("List");
         typeMapping.put("array", "List");
@@ -164,6 +164,8 @@ public class NWScalaCodegen extends SpringCodegen {
                 .filter(imp-> !imp.contains("Json"))
                 .filter(imp-> !imp.contains("Jackson"))
                 .filter(imp-> !imp.contains("ArrayList"))
+                .filter(imp-> !imp.contains("ApiModelProperty"))
+                .filter(imp-> !imp.contains("ApiModel"))
                 .collect(Collectors.toSet());
         if (property.baseType.equals("FeatureTestResult")) {
             // we serialize BigDecimal as `string` to avoid precision loss

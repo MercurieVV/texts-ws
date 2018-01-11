@@ -1,7 +1,7 @@
 app:
   db:
     rdbms: "mysql"
-    host: "nextwirelessbo.ccx3fc954dex.eu-west-1.rds.amazonaws.com"
+    host: "prod-test-cluster.cluster-ccx3fc954dex.eu-west-1.rds.amazonaws.com"
   server:
     port: 8086
   email_properties:
