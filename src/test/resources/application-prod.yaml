@@ -1,7 +1,9 @@
 app:
   db:
+    login: "texts"
     rdbms: "mysql"
-    host: "prod-test-cluster.cluster-ccx3fc954dex.eu-west-1.rds.amazonaws.com"
+    host: "nextwirelessbo.ccx3fc954dex.eu-west-1.rds.amazonaws.com"
+    driverClass: "com.mysql.jdbc.Driver"
   server:
     port: 8086
   email_properties:
