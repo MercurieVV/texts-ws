@@ -14,11 +14,17 @@ import co.nextwireless.texts.ws.server.swagger.zapi.Request_getTexts
   */
 class Process_getTexts(textsRepository: TextsRepository) extends Function1 [Request_getTexts, Texts]{
   override def apply(v1: Request_getTexts): Texts = {
-    val langToMaybeString = textsRepository.getTexts(v1.textId)
+    val langToMaybeString: Map[String, Option[String]] = textsRepository.getTexts(v1.textId)
       .groupBy(_._2)
       .map { case (lang, list) => (lang.lang, list.headOption.map(_._1.text)) }
       .filterNot(_._1.isEmpty)
 
-    Texts(langToMaybeString("EN"), langToMaybeString("FR"))
+    Texts(
+      langToMaybeString.getOrElse("EN", None)
+      , langToMaybeString.getOrElse("FR", None)
+      , langToMaybeString.getOrElse("DE", None)
+      , langToMaybeString.getOrElse("IT", None)
+      , langToMaybeString.getOrElse("ES", None)
+    )
   }
 }
