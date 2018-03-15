@@ -14,6 +14,8 @@ trait TextsApiProcessorsModule extends ApplicationModule {
 
   import com.softwaremill.macwire._
 
+  lazy val process_searchKeys: Process_searchKeys = wire[Process_searchKeys]
+
   lazy val process_getText: Process_getText     = wire[Process_getText]
 
   lazy val process_getTexts: Process_getTexts   = wire[Process_getTexts]

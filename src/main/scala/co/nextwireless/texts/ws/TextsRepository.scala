@@ -14,6 +14,19 @@ import co.nextwireless.texts.ws.db.schema.Tables.{TLang, TText}
 class TextsRepository(dbConfig: DbConfig) {
   import dbConfig._
   import dbConfig.context._
+
+  def searchForKeys(search: Option[String]): List[String] = search match {
+    case None => Nil
+    case Some(keySearchStr) => {
+      val q = quote {
+        query[TText]
+          .filter((text: TText) => text.textkey like lift(keySearchStr + "%"))
+          .map((text: TText) => text.textkey)
+      }
+      run(q)
+    }
+  }
+
   def getTexts(textId: String): List[(TText, TLang)] ={
 //    Stream.eval(Task{
       val q = quote {
