@@ -1,11 +1,13 @@
 package co.nextwireless.swagger;
 
 import io.swagger.codegen.*;
-import io.swagger.codegen.languages.SpringCodegen;
+import io.swagger.codegen.languages.AbstractJavaCodegen;
 import io.swagger.models.Model;
 import io.swagger.models.Operation;
 import io.swagger.models.Swagger;
-import io.swagger.models.properties.*;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.MapProperty;
+import io.swagger.models.properties.Property;
 
 import java.io.File;
 import java.util.*;
@@ -18,10 +20,11 @@ import java.util.stream.Collectors;
  * Time: 5:19 PM
  * Contacts: email: mercurievvss@gmail.com Skype: 'grobokopytoff' or 'mercurievv'
  */
-public class NWScalaCodegen extends SpringCodegen {
+public class NWScalaCodegen extends AbstractJavaCodegen {
+    private final List<String> enumImports = new ArrayList<>();
+
     public NWScalaCodegen() {
         super();
-        interfaceOnly = true;
 
         setSourceFolder(projectFolder + File.separator + "scala");
         setTestFolder(projectTestFolder + File.separator + "scala");
@@ -30,6 +33,7 @@ public class NWScalaCodegen extends SpringCodegen {
 //        apiTestTemplateFiles.put("api_test.mustache", ".scala");
 
         additionalProperties.put("java8", "true");
+//        additionalProperties.put("futureType", "Future");
 
         languageSpecificPrimitives = new HashSet<String>(
                 Arrays.asList(
@@ -52,6 +56,9 @@ public class NWScalaCodegen extends SpringCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
+        apiTestTemplateFiles.remove("api_test.mustache", ".java");
 
         importMapping.clear();
 
@@ -82,8 +89,18 @@ public class NWScalaCodegen extends SpringCodegen {
     }
 
     @Override
+    public CodegenType getTag() {
+        return CodegenType.SERVER;
+    }
+
+    @Override
     public String getName() {
         return "pap-scala";
+    }
+
+    @Override
+    public String getHelp() {
+        return "";
     }
 
     @Override
@@ -127,6 +144,13 @@ public class NWScalaCodegen extends SpringCodegen {
         return varName;
     }
 
+    @Override
+    public CodegenModel fromModel(String name, Model model, Map<String, Model> allDefinitions) {
+        final CodegenModel codegenModel = super.fromModel(name, model, allDefinitions);
+        codegenModel.imports.remove("ApiModel");
+        return codegenModel;
+    }
+
     private String toEnumVarNameNoCasing(String value, String datatype) {
         if (value.length() == 0) {
             return "EMPTY";
@@ -156,7 +180,6 @@ public class NWScalaCodegen extends SpringCodegen {
         }
     }
 
-
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
@@ -172,9 +195,6 @@ public class NWScalaCodegen extends SpringCodegen {
             property.vendorExtensions.put("isExternalEnum", true);
         }
     }
-
-    private final List<String> enumImports = new ArrayList<>();
-
 
     @Override
     public String getTypeDeclaration(Property p) {
@@ -238,16 +258,9 @@ public class NWScalaCodegen extends SpringCodegen {
 
         List<String> type = pathToClientType(op.path, op.pathParams);
         String pathString = path.stream().filter(s -> !s.isEmpty()).collect(Collectors.joining(" / "));
+        pathString = processParams(operation, pathString, op.queryParams);
+//        pathString = processParams(operation, pathString, op.headerParams);
 
-        // Query parameters appended to routes
-        if (!op.queryParams.isEmpty()) {
-            String queryParams = op.queryParams.stream()
-                    .filter(codegenParameter -> !codegenParameter.baseName.isEmpty())
-                    .map(codegenParameter -> (codegenParameter.required ? " +?" : " +??") + " (\"" + codegenParameter.baseName + "\", " + codegenParameter.baseName + ")")
-                    .collect(Collectors.joining());
-            System.out.println("queryParams = " + queryParams);
-            pathString = pathString + queryParams;
-        }
 
         // Either body or form data parameters appended to route
         // As far as I know, you cannot have two ReqBody routes.
@@ -281,6 +294,19 @@ public class NWScalaCodegen extends SpringCodegen {
         op.vendorExtensions.put("x-routeType", pathString);
 
         return op;
+    }
+
+    private String processParams(Operation operation, String pathString, final List<CodegenParameter> params) {
+        // Query parameters appended to routes
+        if (!params.isEmpty()) {
+            String queryParams = params.stream()
+                    .filter(codegenParameter -> !codegenParameter.baseName.isEmpty())
+                    .map(codegenParameter -> "Decoder_" + operation.getOperationId() + "_" + codegenParameter.baseName + "(" + codegenParameter.baseName + ")")
+                    .collect(Collectors.joining(" +& ", " :? ", ""));
+            System.out.println("queryParams = " + queryParams);
+            pathString = pathString + queryParams;
+        }
+        return pathString;
     }
 
     private String makeQueryListType(String type, String collectionFormat) {
